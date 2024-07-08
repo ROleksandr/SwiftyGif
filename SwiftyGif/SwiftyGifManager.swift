@@ -31,8 +31,19 @@ open class SwiftyGifManager {
     fileprivate var displayViews: [PlatformImageView] = []
     fileprivate var totalGifSize: Int
     fileprivate var memoryLimit: Int
+    public var session: URLSession = {
+        let memoryCapacity = 0
+        let diskCapacity = 1024 * 1024 * 1024
+        let cache = URLCache(memoryCapacity: memoryCapacity, diskCapacity: diskCapacity, diskPath: "SwiftyGifCache")
+
+        let configuration = URLSessionConfiguration.default
+        configuration.urlCache = cache
+        configuration.requestCachePolicy = .useProtocolCachePolicy
+
+        return URLSession(configuration: configuration)
+    }()
+    
     open var haveCache: Bool
-    open var remoteCache : [URL : Data] = [:]
 #if swift(>=4.2)
     public var mode: RunLoop.Mode = .common
 #else

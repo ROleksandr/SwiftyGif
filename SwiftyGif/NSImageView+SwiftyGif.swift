@@ -102,19 +102,9 @@ public extension NSImageView {
                        manager: SwiftyGifManager = .defaultManager,
                        loopCount: Int = -1,
                        levelOfIntegrity: GifLevelOfIntegrity = .default,
-                       session: URLSession = URLSession.shared,
+                       session: URLSession = SwiftyGifManager.defaultManager.session,
                        showLoader: Bool = true,
                        customLoader: NSView? = nil) -> URLSessionDataTask? {
-        
-        if let data =  manager.remoteCache[url] {
-            self.parseDownloadedGif(url: url,
-                    data: data,
-                    error: nil,
-                    manager: manager,
-                    loopCount: loopCount,
-                    levelOfIntegrity: levelOfIntegrity)
-            return nil
-        }
         
         stopAnimatingGif()
         
@@ -183,7 +173,6 @@ public extension NSImageView {
         
         do {
             let image = try NSImage(gifData: data, levelOfIntegrity: levelOfIntegrity)
-            manager.remoteCache[url] = data
             setGifImage(image, manager: manager, loopCount: loopCount)
             startAnimatingGif()
             delegate?.gifURLDidFinish?(sender: self)
